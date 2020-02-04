@@ -3,8 +3,12 @@ package com.qianfeng.test;
 import com.qianfeng.job.MyJob;
 
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.quartz.*;
 import org.quartz.impl.StdSchedulerFactory;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.util.GregorianCalendar;
 
@@ -17,44 +21,13 @@ import static java.util.Calendar.MONDAY;
  * 参数：
  * 返回值：
  **/
+
+
 public class JobTest {
 
     public static void main(String[] args) throws SchedulerException {
 
-        try {
-            //创建调度器，核心组件
-            Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
-            //创建触发器
-            TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
-            //创建触发器
-            //定义name和group
 
-
-            Trigger trigger = triggerBuilder.withIdentity("trigger2", "group1")
-                    //一旦加入schedule，就立即生效
-                    .startNow()
-                    //定义触发器类型
-                    .withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * * * ?")
-
-                    )
-                    //.endAt(new GregorianCalendar(2020,1,4,19,01,0).getTime())
-                    .build();
-
-
-            //定义job  任务   将 myjob 交给builder
-            JobDetail  jobDetail =  JobBuilder.newJob(MyJob.class)
-                    .withIdentity("测试任务","test")
-                    .usingJobData("data","jobdata").build();
-            //将任务和触发器加入到调度器
-            scheduler.scheduleJob(jobDetail,trigger);
-            //启动调度器
-            scheduler.start();
-            //Thread.sleep(4000);
-            //关闭调度器
-            // scheduler.shutdown();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 
     @Test
@@ -103,8 +76,6 @@ public class JobTest {
             e.printStackTrace();
         }
    }
-
-
 
    @Test
    public void testCalendarIntervalScheduleBuilder(){
@@ -168,6 +139,43 @@ public class JobTest {
                            .onEveryDay()//每天执行
                             .withIntervalInHours(1)//每小时执行一次
                             .withRepeatCount(100) //执行100次
+                   )
+                   //.endAt(new GregorianCalendar(2020,1,4,19,01,0).getTime())
+                   .build();
+
+
+           //定义job  任务   将 myjob 交给builder
+           JobDetail  jobDetail =  JobBuilder.newJob(MyJob.class)
+                   .withIdentity("测试任务","test")
+                   .usingJobData("data","jobdata").build();
+           //将任务和触发器加入到调度器
+           scheduler.scheduleJob(jobDetail,trigger);
+           //启动调度器
+           scheduler.start();
+           //Thread.sleep(4000);
+           //关闭调度器
+           // scheduler.shutdown();
+       } catch (Exception e) {
+           e.printStackTrace();
+       }
+   }
+    @Test
+   public void testCronScheduler(){
+       try {
+           //创建调度器，核心组件
+           Scheduler scheduler = StdSchedulerFactory.getDefaultScheduler();
+           //创建触发器
+           TriggerBuilder<Trigger> triggerBuilder = TriggerBuilder.newTrigger();
+           //创建触发器
+           //定义name和group
+
+
+           Trigger trigger = triggerBuilder.withIdentity("trigger2", "group1")
+                   //一旦加入schedule，就立即生效
+                   .startNow()
+                   //定义触发器类型
+                   .withSchedule(CronScheduleBuilder.cronSchedule("0/2 * * * * ?")
+
                    )
                    //.endAt(new GregorianCalendar(2020,1,4,19,01,0).getTime())
                    .build();

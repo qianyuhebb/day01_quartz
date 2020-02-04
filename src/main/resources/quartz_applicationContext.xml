@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd
+	http://www.springframework.org/schema/context
+	http://www.springframework.org/schema/context/spring-context.xsd
+	http://www.springframework.org/schema/aop
+	http://www.springframework.org/schema/aop/spring-aop.xsd
+	http://www.springframework.org/schema/tx
+	http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!--quertz的job配置-->
+    <bean id="lxjob" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+       <!--定义 组 和名-->
+        <property name="name" value="job1"/>
+        <property name="group" value="group1"/>
+        <!--定义具体的job类-->
+        <property name="jobClass" value="com.qianfeng.job.MyJob"/>
+        <!--如果为false 当job没有trigger匹配时，调度器会删除该job  如下两个为可选-->
+        <property name="durability" value="false"/>
+<!--        <property name="applicationContextJobDataKey" value="data04"/>-->
+    </bean>
+    <!--quertz 的 trigger 配置-->
+    <bean id="cronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+      <property name="name" value="trigger01"/>
+        <property name="group" value="group01"/>
+        <property name="jobDetail" ref="lxjob"/>
+        <property name="cronExpression" value="0/2 * * * * ?"/>
+
+    </bean>
+    <!--定义调度器  并且将trigger注册到scheduler-->
+    <bean id="scheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+            <property name="triggers">
+                <list>
+                    <ref bean="cronTrigger"/>
+                </list>
+            </property>
+        <!--添加quartz 配置 有两种方式-->
+        <property name="configLocation" value="classpath:quartz.properties"/>
+       <!-- <property name="quartzProperties">
+
+                <value>
+                    #指定调度器名称
+                    org.quartz.scheduler.instanceName=DefaultQuartzScheduler
+                    #指定线程池实现类
+                    org.quartz.threadPool.class=org.quartz.simpl.SimpleThreadPool
+                    #指定线程数量
+                    org.quartz.threadPool.threadCount=15
+                    #优先级
+                    org.quartz.threadPool.threadPriority=5
+                    #非持久化job
+                    org.quartz.jobStore.class=org.quartz.simpl.RAMJobStore
+                </value>
+
+        </property>-->
+    </bean>
+</beans>

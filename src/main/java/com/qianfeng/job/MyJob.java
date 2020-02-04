@@ -15,7 +15,7 @@ import java.util.Date;
 
 
 //防止并发执行
-@DisallowConcurrentExecution
+//@DisallowConcurrentExecution
 public class MyJob implements Job {
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {
@@ -31,8 +31,8 @@ public class MyJob implements Job {
          //获取工作名称
         String name = jobDetail.getKey().getName();
         String group = jobDetail.getKey().getGroup();
-        String data = jobDetail.getJobDataMap().getString("data");
-        System.out.println("job执行，job名为："+name+"group为："+group+"data 为："+data+new Date());
+//        String data = jobDetail.getJobDataMap().getString("data");
+        System.out.println("job执行，job名为："+name+"group为："+group+"data 为："+new Date());
 
 
 
